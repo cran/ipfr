@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Using ipfr</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using ipfr</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Iterative proportional fitting (<a href="https://en.wikipedia.org/wiki/Iterative_proportional_fitting">IPF</a>) is used in many disciplines to adjust an initial set of weights to match various marginal distributions. This package implements the iterative proportional updating algorithm based on the paper from Arizona State University (<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&amp;rep=rep1&amp;type=pdf">IPU</a>). In survey raking or population synthesis, the IPU algorithm has the added advantage of being able to match household- and person-level marginal targets.</p>
+<p>The primary functions of the <code>ipfr</code> package are discussed below.</p>
+<ul>
+<li><code>ipu_matrix()</code></li>
+<li><code>ipu()</code></li>
+<li><code>synthesize()</code></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">suppressPackageStartupMessages</span>({</a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="kw">library</span>(ipfr)</a>
+<a class="sourceLine" id="cb1-3" title="3">  <span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-4" title="4">})</a></code></pre></div>
+<div id="example-2d-matrix" class="section level2">
+<h2>Example: 2D / Matrix</h2>
+<p>The first example shows how to use <code>ipfr</code> to solve one of the most common IPF problems: Given a matrix of starting weights and a set of row and column targets, balance the matrix in order to satisfy both row and column targets.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">mtx &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">runif</span>(<span class="dv">9</span>), <span class="dt">nrow =</span> <span class="dv">3</span>, <span class="dt">ncol =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3">row_targets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb2-4" title="4">column_targets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-5" title="5">mtx</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="co">#&gt;           [,1]      [,2]      [,3]</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">#&gt; [1,] 0.9148060 0.8304476 0.7365883</span></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="co">#&gt; [2,] 0.9370754 0.6417455 0.1346666</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co">#&gt; [3,] 0.2861395 0.5190959 0.6569923</span></a></code></pre></div>
+<p>The resulting matrix satisfies both row and column targets while retaining a similar relative distribution of weights in each cell.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">result &lt;-<span class="st"> </span><span class="kw">ipu_matrix</span>(mtx, row_targets, column_targets)</a>
+<a class="sourceLine" id="cb3-2" title="2">result</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;          [,1]      [,2]      [,3]</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,] 1.317384 0.9349039 0.7477130</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,] 2.443984 1.3084532 0.2475772</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,] 1.238632 1.7566429 2.0047098</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="kw">rowSums</span>(result)</a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [1] 3.000001 4.000015 4.999985</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="kw">colSums</span>(result)</a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; [1] 5 4 3</span></a></code></pre></div>
+</div>
+<div id="example-household-survey-simple" class="section level2">
+<h2>Example: Household survey (simple)</h2>
+<p>The matrix example is common and conceptually simple, but makes thinking about higher-dimension problems difficult. A much better way to think about the problem (whether in two or ten dimensions) is as a table.</p>
+<p>This example creates a household survey that will act as the seed (like the matrix from the last example). The number of persons and autos for each household is listed in the <code>size</code> and <code>autos</code> columns. A starting weight of 1 is also included.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">survey &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb4-2" title="2">  <span class="dt">size =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">autos =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">weight =</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-5" title="5">)</a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7">survey</a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt;    size autos weight</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; 1     1     0      1</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; 2     2     2      1</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; 3     1     2      1</span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; 4     1     1      1</span></a></code></pre></div>
+<p>Assume that we know the total number of households by size and households by auto-ownership from the Census. These target marginal distributions are just like our row and column totals from the previous example. Targets are passed into the <code>ipu</code> function as shown below. Take the size targets, for example:</p>
+<ul>
+<li>The list name <code>size</code> corresponds to the <code>size</code> column in the survey.</li>
+<li>The column names <code>1</code> and <code>2</code> correspond to the unique values in the survey’s <code>size</code> column.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">targets &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb5-2" title="2">targets<span class="op">$</span>size &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="dv">75</span>,</a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="dv">25</span></a>
+<a class="sourceLine" id="cb5-5" title="5">)</a>
+<a class="sourceLine" id="cb5-6" title="6">targets<span class="op">$</span>autos &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb5-7" title="7">  <span class="st">`</span><span class="dt">0</span><span class="st">`</span> =<span class="st"> </span><span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb5-8" title="8">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb5-9" title="9">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="dv">25</span></a>
+<a class="sourceLine" id="cb5-10" title="10">)</a>
+<a class="sourceLine" id="cb5-11" title="11"></a>
+<a class="sourceLine" id="cb5-12" title="12">targets</a>
+<a class="sourceLine" id="cb5-13" title="13"><span class="co">#&gt; $size</span></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
+<a class="sourceLine" id="cb5-15" title="15"><span class="co">#&gt;     `1`   `2`</span></a>
+<a class="sourceLine" id="cb5-16" title="16"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb5-17" title="17"><span class="co">#&gt; 1    75    25</span></a>
+<a class="sourceLine" id="cb5-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-19" title="19"><span class="co">#&gt; $autos</span></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
+<a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt;     `0`   `1`   `2`</span></a>
+<a class="sourceLine" id="cb5-22" title="22"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt; 1    25    50    25</span></a></code></pre></div>
+<p>A call to <code>ipu()</code> returns a named list of results.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(survey, targets)</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">names</span>(result)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt; [1] &quot;weight_tbl&quot;   &quot;weight_dist&quot;  &quot;primary_comp&quot;</span></a></code></pre></div>
+<p>The first element is the resulting weight table. The primary seed has three columns appended:</p>
+<ul>
+<li>weight
+<ul>
+<li>The new/expanded weight of the record.</li>
+</ul></li>
+<li>avg_weight
+<ul>
+<li>The average weight, which is the total target / number of seed records.</li>
+</ul></li>
+<li>weight_factor
+<ul>
+<li>Each record’s weight divided by the average weight. This is a useful diagnostic to measure how extreme a weight is.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">result<span class="op">$</span>weight_tbl</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt;    size autos weight    id avg_weight weight_factor</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;         &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">#&gt; 1     1     0 25.0       1         25        1.000 </span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&gt; 2     2     2 24.7       2         25        0.990 </span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">#&gt; 3     1     2  0.255     3         25        0.0102</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">#&gt; 4     1     1 50.0       4         25        2.00</span></a></code></pre></div>
+<p>The second element is a histogram of the <code>weight_factor</code>. This provides a quick overview of the distribution of weights. Many large or small weights can indicate underlying problems even if the ipu converged and matches targets. For instance, a record with a weight factor of 50 means that it is greatly over-represented in the re-weighted survey.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">result<span class="op">$</span>weight_dist</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The next element is a comparison back to the targets provided. With complex seed and target tables, this makes investigating results quick and easy.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="co">#&gt; # A tibble: 5 x 6</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt;   geography category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; 1 geo_all   autos_0      25   25.0  0        0   </span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="co">#&gt; 2 geo_all   autos_1      50   50.0  0        0   </span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co">#&gt; 3 geo_all   autos_2      25   25    0        0   </span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="co">#&gt; 4 geo_all   size_1       75   75.3  0.26     0.34</span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="co">#&gt; 5 geo_all   size_2       25   24.7 -0.26    -1.02</span></a></code></pre></div>
+<p>If secondary targets are provided to <code>ipu()</code>, a fourth item in the list will contain a <code>secondary_comp</code> table.</p>
+</div>
+<div id="example-add-person-targets" class="section level2">
+<h2>Example: Add person targets</h2>
+<p>In household survey expansion, it is common to want to control for certain features that describe households (like size) while controlling for other attributes that describe people (like age). This is possible with the <code>ipu()</code> function.</p>
+<p>This example is taken directly from the Arizona paper on page 20: <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&amp;rep=rep1&amp;type=pdf" class="uri">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&amp;rep=rep1&amp;type=pdf</a></p>
+<p>In this example, household type could represent size (e.g. 1-person and 2-person households). Person type could represent age groups (e.g. under 18, between 18 and 50, and over 50).</p>
+<p><code>setup_arizona()</code> creates the seed and target tables used in the example.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">result &lt;-<span class="st"> </span><span class="kw">setup_arizona</span>()</a>
+<a class="sourceLine" id="cb10-2" title="2">hh_seed &lt;-<span class="st"> </span>result<span class="op">$</span>hh_seed</a>
+<a class="sourceLine" id="cb10-3" title="3">hh_targets &lt;-<span class="st"> </span>result<span class="op">$</span>hh_targets</a>
+<a class="sourceLine" id="cb10-4" title="4">per_seed &lt;-<span class="st"> </span>result<span class="op">$</span>per_seed</a>
+<a class="sourceLine" id="cb10-5" title="5">per_targets &lt;-<span class="st"> </span>result<span class="op">$</span>per_targets</a></code></pre></div>
+<ul>
+<li>The household seed table is the <code>primary_seed</code></li>
+<li>The household target list is the <code>primary_target</code></li>
+<li>The person seed table is the <code>secondary_seed</code></li>
+<li>The person target list is the <code>secondary_target</code></li>
+</ul>
+<p>In the interest of keeping vignette build time short, the <code>ipu()</code> algorithm is only run for 30 iterations. After running for 400 or more iterations, the results match closely to those shown in the paper.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(hh_seed, hh_targets, per_seed, per_targets, <span class="dt">max_iterations =</span> <span class="dv">30</span>)</a></code></pre></div>
+<p>The comparison table for the secondary (person) marginals is now included in <code>result</code>. Feel free to run the code chunk above for 400 or more iterations and then look again.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">result<span class="op">$</span>weight_tbl</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; # A tibble: 8 x 5</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="co">#&gt;      id hhtype weight avg_weight weight_factor</span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="co">#&gt;   &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="co">#&gt; 1     1      1   3.77       12.5         0.301</span></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="co">#&gt; 2     2      1  23.0        12.5         1.84 </span></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="co">#&gt; 3     3      1   6.50       12.5         0.520</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="co">#&gt; 4     4      2  25.7        12.5         2.06 </span></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="co">#&gt; 5     5      2  17.4        12.5         1.39 </span></a>
+<a class="sourceLine" id="cb12-10" title="10"><span class="co">#&gt; 6     6      2   7.26       12.5         0.581</span></a>
+<a class="sourceLine" id="cb12-11" title="11"><span class="co">#&gt; 7     7      2   4.21       12.5         0.337</span></a>
+<a class="sourceLine" id="cb12-12" title="12"><span class="co">#&gt; 8     8      2   7.26       12.5         0.581</span></a>
+<a class="sourceLine" id="cb12-13" title="13">  </a>
+<a class="sourceLine" id="cb12-14" title="14">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb12-15" title="15"><span class="co">#&gt; # A tibble: 2 x 6</span></a>
+<a class="sourceLine" id="cb12-16" title="16"><span class="co">#&gt;   geography category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb12-17" title="17"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb12-18" title="18"><span class="co">#&gt; 1 geo_all   hhtype_1     35   33.3 -1.73    -4.94</span></a>
+<a class="sourceLine" id="cb12-19" title="19"><span class="co">#&gt; 2 geo_all   hhtype_2     65   61.9 -3.15    -4.84</span></a>
+<a class="sourceLine" id="cb12-20" title="20"></a>
+<a class="sourceLine" id="cb12-21" title="21">result<span class="op">$</span>secondary_comp</a>
+<a class="sourceLine" id="cb12-22" title="22"><span class="co">#&gt; # A tibble: 3 x 6</span></a>
+<a class="sourceLine" id="cb12-23" title="23"><span class="co">#&gt;   geography category  target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb12-24" title="24"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb12-25" title="25"><span class="co">#&gt; 1 geo_all   pertype_1     91   88.4 -2.58    -2.83</span></a>
+<a class="sourceLine" id="cb12-26" title="26"><span class="co">#&gt; 2 geo_all   pertype_2     65   63.8 -1.16    -1.79</span></a>
+<a class="sourceLine" id="cb12-27" title="27"><span class="co">#&gt; 3 geo_all   pertype_3    104  104    0        0</span></a></code></pre></div>
+</div>
+<div id="example-3-using-multiple-geographies" class="section level2">
+<h2>Example 3: Using multiple geographies</h2>
+<p><code>ipu()</code> allows different geographies to be specified for different marginal tables. There are a few rules that make this possible, but in short, a geography field in each target table tells the algorithm which scale to constrain to. If no geography field is present in a target table, it applies to the entire seed table (i.e. region).</p>
+<p>All of the following rules are checked by the function and a warning message will show which (if any) is violated.</p>
+<ul>
+<li>The primary seed table must contain all geography fields used by any target tables.</li>
+<li>Do not duplicate geography fields on the secondary seed table.
+<ul>
+<li>This prevents potential errors/inconsistencies between seed tables.</li>
+</ul></li>
+<li>All fields that designate geographies must start with “geo_” e.g.
+<ul>
+<li>geo_tract</li>
+<li>geo_region</li>
+<li>geo_state</li>
+</ul></li>
+</ul>
+<p>To demonstrate, the Arizona example is modified to add two different tracts for household controls but to still control the person targets at the regional level.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="co"># Repeat the hh_seed to create tract 1 and 2 households</span></a>
+<a class="sourceLine" id="cb13-2" title="2">new_hh_seed &lt;-<span class="st"> </span>hh_seed <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geo_tract =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb13-4" title="4">new_hh_seed &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(</a>
+<a class="sourceLine" id="cb13-5" title="5">  new_hh_seed,</a>
+<a class="sourceLine" id="cb13-6" title="6">  new_hh_seed <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-7" title="7"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">geo_tract =</span> <span class="dv">2</span>, <span class="dt">id =</span> id <span class="op">+</span><span class="st"> </span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb13-8" title="8">)</a>
+<a class="sourceLine" id="cb13-9" title="9">new_hh_seed<span class="op">$</span>geo_region &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb13-10" title="10"></a>
+<a class="sourceLine" id="cb13-11" title="11">new_hh_seed</a>
+<a class="sourceLine" id="cb13-12" title="12"><span class="co">#&gt; # A tibble: 16 x 4</span></a>
+<a class="sourceLine" id="cb13-13" title="13"><span class="co">#&gt;       id hhtype geo_tract geo_region</span></a>
+<a class="sourceLine" id="cb13-14" title="14"><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-15" title="15"><span class="co">#&gt;  1     1      1         1          1</span></a>
+<a class="sourceLine" id="cb13-16" title="16"><span class="co">#&gt;  2     2      1         1          1</span></a>
+<a class="sourceLine" id="cb13-17" title="17"><span class="co">#&gt;  3     3      1         1          1</span></a>
+<a class="sourceLine" id="cb13-18" title="18"><span class="co">#&gt;  4     4      2         1          1</span></a>
+<a class="sourceLine" id="cb13-19" title="19"><span class="co">#&gt;  5     5      2         1          1</span></a>
+<a class="sourceLine" id="cb13-20" title="20"><span class="co">#&gt;  6     6      2         1          1</span></a>
+<a class="sourceLine" id="cb13-21" title="21"><span class="co">#&gt;  7     7      2         1          1</span></a>
+<a class="sourceLine" id="cb13-22" title="22"><span class="co">#&gt;  8     8      2         1          1</span></a>
+<a class="sourceLine" id="cb13-23" title="23"><span class="co">#&gt;  9     9      1         2          1</span></a>
+<a class="sourceLine" id="cb13-24" title="24"><span class="co">#&gt; 10    10      1         2          1</span></a>
+<a class="sourceLine" id="cb13-25" title="25"><span class="co">#&gt; 11    11      1         2          1</span></a>
+<a class="sourceLine" id="cb13-26" title="26"><span class="co">#&gt; 12    12      2         2          1</span></a>
+<a class="sourceLine" id="cb13-27" title="27"><span class="co">#&gt; 13    13      2         2          1</span></a>
+<a class="sourceLine" id="cb13-28" title="28"><span class="co">#&gt; 14    14      2         2          1</span></a>
+<a class="sourceLine" id="cb13-29" title="29"><span class="co">#&gt; 15    15      2         2          1</span></a>
+<a class="sourceLine" id="cb13-30" title="30"><span class="co">#&gt; 16    16      2         2          1</span></a>
+<a class="sourceLine" id="cb13-31" title="31"></a>
+<a class="sourceLine" id="cb13-32" title="32"><span class="co"># Repeat the household targets for two tracts</span></a>
+<a class="sourceLine" id="cb13-33" title="33">new_hh_targets &lt;-<span class="st"> </span>hh_targets</a>
+<a class="sourceLine" id="cb13-34" title="34">new_hh_targets<span class="op">$</span>hhtype &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(hh_targets<span class="op">$</span>hhtype, hh_targets<span class="op">$</span>hhtype)</a>
+<a class="sourceLine" id="cb13-35" title="35">new_hh_targets<span class="op">$</span>hhtype &lt;-<span class="st"> </span>new_hh_targets<span class="op">$</span>hhtype <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-36" title="36"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geo_tract =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb13-37" title="37"></a>
+<a class="sourceLine" id="cb13-38" title="38">new_hh_targets<span class="op">$</span>hhtype</a>
+<a class="sourceLine" id="cb13-39" title="39"><span class="co">#&gt; # A tibble: 2 x 3</span></a>
+<a class="sourceLine" id="cb13-40" title="40"><span class="co">#&gt;     `1`   `2` geo_tract</span></a>
+<a class="sourceLine" id="cb13-41" title="41"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-42" title="42"><span class="co">#&gt; 1    35    65         1</span></a>
+<a class="sourceLine" id="cb13-43" title="43"><span class="co">#&gt; 2    35    65         2</span></a>
+<a class="sourceLine" id="cb13-44" title="44"></a>
+<a class="sourceLine" id="cb13-45" title="45"><span class="co"># Repeat the per_seed to create tract 1 and 2 persons</span></a>
+<a class="sourceLine" id="cb13-46" title="46">new_per_seed &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(</a>
+<a class="sourceLine" id="cb13-47" title="47">  per_seed,</a>
+<a class="sourceLine" id="cb13-48" title="48">  per_seed <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-49" title="49"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">id =</span> id <span class="op">+</span><span class="st"> </span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb13-50" title="50">)</a>
+<a class="sourceLine" id="cb13-51" title="51"></a>
+<a class="sourceLine" id="cb13-52" title="52">new_per_seed</a>
+<a class="sourceLine" id="cb13-53" title="53"><span class="co">#&gt; # A tibble: 46 x 2</span></a>
+<a class="sourceLine" id="cb13-54" title="54"><span class="co">#&gt;       id pertype</span></a>
+<a class="sourceLine" id="cb13-55" title="55"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-56" title="56"><span class="co">#&gt;  1     1       1</span></a>
+<a class="sourceLine" id="cb13-57" title="57"><span class="co">#&gt;  2     1       2</span></a>
+<a class="sourceLine" id="cb13-58" title="58"><span class="co">#&gt;  3     1       3</span></a>
+<a class="sourceLine" id="cb13-59" title="59"><span class="co">#&gt;  4     2       1</span></a>
+<a class="sourceLine" id="cb13-60" title="60"><span class="co">#&gt;  5     2       3</span></a>
+<a class="sourceLine" id="cb13-61" title="61"><span class="co">#&gt;  6     3       1</span></a>
+<a class="sourceLine" id="cb13-62" title="62"><span class="co">#&gt;  7     3       1</span></a>
+<a class="sourceLine" id="cb13-63" title="63"><span class="co">#&gt;  8     3       2</span></a>
+<a class="sourceLine" id="cb13-64" title="64"><span class="co">#&gt;  9     4       1</span></a>
+<a class="sourceLine" id="cb13-65" title="65"><span class="co">#&gt; 10     4       3</span></a>
+<a class="sourceLine" id="cb13-66" title="66"><span class="co">#&gt; # ... with 36 more rows</span></a>
+<a class="sourceLine" id="cb13-67" title="67"></a>
+<a class="sourceLine" id="cb13-68" title="68"><span class="co"># Double the regional person targets</span></a>
+<a class="sourceLine" id="cb13-69" title="69">new_per_targets &lt;-<span class="st"> </span>per_targets</a>
+<a class="sourceLine" id="cb13-70" title="70">new_per_targets<span class="op">$</span>pertype &lt;-<span class="st"> </span>per_targets<span class="op">$</span>pertype <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-71" title="71"><span class="st">  </span><span class="kw">mutate_all</span>(<span class="kw">list</span>(<span class="op">~</span>. <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-72" title="72"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">geo_region =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb13-73" title="73"></a>
+<a class="sourceLine" id="cb13-74" title="74">new_per_targets<span class="op">$</span>pertype</a>
+<a class="sourceLine" id="cb13-75" title="75"><span class="co">#&gt; # A tibble: 1 x 4</span></a>
+<a class="sourceLine" id="cb13-76" title="76"><span class="co">#&gt;     `1`   `2`   `3` geo_region</span></a>
+<a class="sourceLine" id="cb13-77" title="77"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-78" title="78"><span class="co">#&gt; 1   182   130   208          1</span></a></code></pre></div>
+<p>Run the IPU algorithm. Again, for vignette build time, only 30 iterations are performed. Run the code yourself with <code>max_iterations</code> set to 600 to see the converged result.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(</a>
+<a class="sourceLine" id="cb14-2" title="2">  new_hh_seed, new_hh_targets,</a>
+<a class="sourceLine" id="cb14-3" title="3">  new_per_seed, new_per_targets,</a>
+<a class="sourceLine" id="cb14-4" title="4">  <span class="dt">max_iterations =</span> <span class="dv">30</span></a>
+<a class="sourceLine" id="cb14-5" title="5">)</a></code></pre></div>
+<p>The tables below show the results compared back to targets.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="co">#&gt;   geography   category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="co">#&gt; 1 geo_tract_1 hhtype_1     35   33.3 -1.73    -4.94</span></a>
+<a class="sourceLine" id="cb15-6" title="6"><span class="co">#&gt; 2 geo_tract_1 hhtype_2     65   61.9 -3.15    -4.84</span></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="co">#&gt; 3 geo_tract_2 hhtype_1     35   33.3 -1.73    -4.94</span></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="co">#&gt; 4 geo_tract_2 hhtype_2     65   61.9 -3.15    -4.84</span></a>
+<a class="sourceLine" id="cb15-9" title="9"></a>
+<a class="sourceLine" id="cb15-10" title="10">result<span class="op">$</span>secondary_comp</a>
+<a class="sourceLine" id="cb15-11" title="11"><span class="co">#&gt; # A tibble: 3 x 6</span></a>
+<a class="sourceLine" id="cb15-12" title="12"><span class="co">#&gt;   geography    category  target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb15-13" title="13"><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb15-14" title="14"><span class="co">#&gt; 1 geo_region_1 pertype_1    182   177. -5.16    -2.83</span></a>
+<a class="sourceLine" id="cb15-15" title="15"><span class="co">#&gt; 2 geo_region_1 pertype_2    130   128. -2.33    -1.79</span></a>
+<a class="sourceLine" id="cb15-16" title="16"><span class="co">#&gt; 3 geo_region_1 pertype_3    208   208   0        0</span></a></code></pre></div>
+</div>
+<div id="advanced-options" class="section level2">
+<h2>Advanced options</h2>
+<p><code>ipu</code> offers some advanced options for controlling the behavior. Weights can be capped with <code>min_ratio</code> and <code>max_ratio</code> options. Secondary target importance can be adjusted using the <code>secondary_importance</code> option. For info on using these options appropriately, see the <code>common_ipf_problems</code> vignette.</p>
+</div>
+<div id="synthetic-populations" class="section level2">
+<h2>Synthetic Populations</h2>
+<p>The <code>weight_tbl</code> from <code>ipu()</code> can be fed into the <code>synthesize()</code> function to generate a synthetic population. The code block below takes the output from the previous example to demonstrate. The <code>group_by</code> option tells the function to group by the <code>geo_tract</code> field before random sampling takes places. This will ensure that the number of sampled records in each tract equals the total weight in each tract.</p>
+<p>A <code>new_id</code> is created for each synthetic member (usually a household), but the old ID is preserved to facilitate joins or other operations where it could be useful.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="kw">synthesize</span>(result<span class="op">$</span>weight_tbl, <span class="dt">group_by =</span> <span class="st">&quot;geo_tract&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="st">  </span><span class="kw">head</span>()</a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="co">#&gt; # A tibble: 6 x 5</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="co">#&gt;   new_id    id hhtype geo_tract geo_region</span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="co">#&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">#&gt; 1      1     3      1         1          1</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="co">#&gt; 2      2     7      2         1          1</span></a>
+<a class="sourceLine" id="cb16-9" title="9"><span class="co">#&gt; 3      3     2      1         1          1</span></a>
+<a class="sourceLine" id="cb16-10" title="10"><span class="co">#&gt; 4      4     8      2         1          1</span></a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="co">#&gt; 5      5     5      2         1          1</span></a>
+<a class="sourceLine" id="cb16-12" title="12"><span class="co">#&gt; 6      6     5      2         1          1</span></a></code></pre></div>
+<p>A tidyverse-style call also works, as shown below.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb17-2" title="2">result<span class="op">$</span>weight_tbl <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(geo_tract) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="st">  </span><span class="kw">synthesize</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-5" title="5"><span class="st">  </span><span class="kw">head</span>()</a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="co">#&gt; # A tibble: 6 x 5</span></a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="co">#&gt;   new_id    id hhtype geo_tract geo_region</span></a>
+<a class="sourceLine" id="cb17-8" title="8"><span class="co">#&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb17-9" title="9"><span class="co">#&gt; 1      1     3      1         1          1</span></a>
+<a class="sourceLine" id="cb17-10" title="10"><span class="co">#&gt; 2      2     7      2         1          1</span></a>
+<a class="sourceLine" id="cb17-11" title="11"><span class="co">#&gt; 3      3     2      1         1          1</span></a>
+<a class="sourceLine" id="cb17-12" title="12"><span class="co">#&gt; 4      4     8      2         1          1</span></a>
+<a class="sourceLine" id="cb17-13" title="13"><span class="co">#&gt; 5      5     5      2         1          1</span></a>
+<a class="sourceLine" id="cb17-14" title="14"><span class="co">#&gt; 6      6     5      2         1          1</span></a></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

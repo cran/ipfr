@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Addressing common IPF problems</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Addressing common IPF problems</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">suppressPackageStartupMessages</span>({</a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="kw">library</span>(ipfr)</a>
+<a class="sourceLine" id="cb1-3" title="3">  <span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-4" title="4">})</a></code></pre></div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette demonstrates how <code>ipu()</code> addresses common problems found in basic ipf approaches.</p>
+</div>
+<div id="zero-weights" class="section level1">
+<h1>Zero weights</h1>
+<p>IPF works by successively multiplying table/matrix weights by factors. Cells with a zero weight cannot be modified by this process and always remain at 0. As the number of zero weights increase, the flexibility of the process is reduced, and convergence becomes more difficult. <code>ipfr</code> solves this problem by setting a minimum weight for all cells to <code>.0001</code>. This minimum weight can be adjusted using the <code>min_weight</code> parameter and should be arbitrarily small compared to your seed table weights.</p>
+</div>
+<div id="missing-seed-information" class="section level1">
+<h1>Missing seed information</h1>
+<p>Not every combination of marginal categories is required to be included in the seed table; however, at least one observation of each category must exist. For example, the combination:</p>
+<ul>
+<li>siz = 1</li>
+<li>wrk = 1</li>
+<li>veh = 0</li>
+</ul>
+<p>may not have been observed in the survey, and thus may be missing from the seed table. As long as other combinations of size-1 households exist (e.g. with 0 workers and 1 vehicle), <code>ipfr</code> will work fine. On the other hand, if there are no observations of any size-1 households, <code>ipfr</code> will stop with an error message.</p>
+</div>
+<div id="target-agreement" class="section level1">
+<h1>Target agreement</h1>
+<p><code>ipfr</code> handles two separate issues concerning marginal agreement:</p>
+<ul>
+<li>Agreement within primary targets (also within secondary targets)</li>
+<li>Balance between primary and secondary targets</li>
+</ul>
+<div id="agreement-within-primary-or-secondary-targets" class="section level2">
+<h2>Agreement within primary or secondary targets</h2>
+<p>A basic implementation of iterative proportional fitting requires that all targets agree on the total. For example, if the households by size target table has a total of 100 households, but the households by income table has a total of 120, both cannot be satisfied. The process will not converge.</p>
+<p><code>ipfr</code> handles this by scaling all tables in the same target list (e.g. <code>primary_targets</code>) to match the total of the first table.</p>
+<p>In the example below, the size marginal sums to a total of 100 households. The vehicle marginal sums to 300. With the <code>verbose</code> option set to <code>TRUE</code>, a message will be displayed telling which, if any, target tables are scaled.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">hh_seed &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb2-2" title="2">  <span class="dt">geo_region =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-3" title="3">  <span class="dt">id =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb2-4" title="4">  <span class="dt">hhsiz =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="dt">hhveh =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">)</a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8">hh_targets &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb2-9" title="9">hh_targets<span class="op">$</span>hhsiz &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb2-10" title="10">  <span class="dt">geo_region =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-11" title="11">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="dv">35</span>,</a>
+<a class="sourceLine" id="cb2-12" title="12">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="dv">65</span></a>
+<a class="sourceLine" id="cb2-13" title="13">)</a>
+<a class="sourceLine" id="cb2-14" title="14">hh_targets<span class="op">$</span>hhveh &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb2-15" title="15">  <span class="dt">geo_region =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-16" title="16">  <span class="st">`</span><span class="dt">0</span><span class="st">`</span> =<span class="st"> </span><span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb2-17" title="17">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb2-18" title="18">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-19" title="19">)</a>
+<a class="sourceLine" id="cb2-20" title="20"></a>
+<a class="sourceLine" id="cb2-21" title="21">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(hh_seed, hh_targets, <span class="dt">max_iterations =</span> <span class="dv">30</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-22" title="22"><span class="co">#&gt; Scaling target tables:  hhveh</span></a>
+<a class="sourceLine" id="cb2-23" title="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-24" title="24"> Finished iteration  <span class="dv">2</span> . %RMSE =<span class="st">  </span><span class="fl">9.044233</span></a>
+<a class="sourceLine" id="cb2-25" title="25"> Finished iteration  <span class="dv">3</span> . %RMSE =<span class="st">  </span><span class="fl">0.4706742</span></a>
+<a class="sourceLine" id="cb2-26" title="26"> Finished iteration  <span class="dv">4</span> . %RMSE =<span class="st">  </span><span class="fl">0.02385747</span></a>
+<a class="sourceLine" id="cb2-27" title="27"> Finished iteration  <span class="dv">5</span> . %RMSE =<span class="st">  </span><span class="fl">0.001207629</span></a>
+<a class="sourceLine" id="cb2-28" title="28"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-29" title="29"><span class="co">#&gt; IPU converged</span></a>
+<a class="sourceLine" id="cb2-30" title="30"><span class="co">#&gt; All targets matched within the absolute_diff of 10</span></a></code></pre></div>
+<p>Importantly, the performance measures below compare the result to the scaled target not the original. Note that the vehicle targets have been scaled down.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; # A tibble: 5 x 6</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;   geography    category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; 1 geo_region_1 hhsiz_1    35     35.0     0        0</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; 2 geo_region_1 hhsiz_2    65     65.0     0        0</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; 3 geo_region_1 hhveh_0    33.3   33.3     0        0</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; 4 geo_region_1 hhveh_1    33.3   33.3     0        0</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; 5 geo_region_1 hhveh_2    33.3   33.3     0        0</span></a></code></pre></div>
+</div>
+<div id="balance-between-primary-and-secondary-targets" class="section level2">
+<h2>Balance between primary and secondary targets</h2>
+<p>In population synthesis or survey expansion, adding a secondary set of person-level targets can lead to a different issue: target balance. Naturally, the total number of households and the total number of persons will be very different. A balance issue only arises when the <em>average weight</em> for household records and person records are very different. That is, when the total of household targets divided by household records is very different from the total of person targets divided by person records.</p>
+<p>This example is taken directly from the Arizona paper on page 20: <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&amp;rep=rep1&amp;type=pdf" class="uri">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&amp;rep=rep1&amp;type=pdf</a></p>
+<p>In this example, household type could represent size (e.g. 1-person and 2-person households). Person type could represent age groups (e.g. under 18, between 18 and 50, and over 50).</p>
+<p><code>setup_arizona()</code> creates the seed and target tables used in the example.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">result &lt;-<span class="st"> </span><span class="kw">setup_arizona</span>()</a>
+<a class="sourceLine" id="cb4-2" title="2">hh_seed &lt;-<span class="st"> </span>result<span class="op">$</span>hh_seed</a>
+<a class="sourceLine" id="cb4-3" title="3">hh_targets &lt;-<span class="st"> </span>result<span class="op">$</span>hh_targets</a>
+<a class="sourceLine" id="cb4-4" title="4">per_seed &lt;-<span class="st"> </span>result<span class="op">$</span>per_seed</a>
+<a class="sourceLine" id="cb4-5" title="5">per_targets &lt;-<span class="st"> </span>result<span class="op">$</span>per_targets</a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7">avg_hh_weight &lt;-<span class="st"> </span>(<span class="kw">rowSums</span>(hh_targets<span class="op">$</span>hhtype) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(hh_seed)</a>
+<a class="sourceLine" id="cb4-8" title="8">avg_per_weight &lt;-<span class="st"> </span>(<span class="kw">rowSums</span>(per_targets<span class="op">$</span>pertype) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(per_seed)</a></code></pre></div>
+<p>Note that the average weights are similar.</p>
+<ul>
+<li>Average household weight = 12.375</li>
+<li>Average person weight = 11.26</li>
+</ul>
+<p>In real applications, this is often not true. The example below demonstrates the consequences by modifying the Arizona to double the person targets.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">new_per_targets &lt;-<span class="st"> </span>per_targets</a>
+<a class="sourceLine" id="cb5-2" title="2">new_per_targets<span class="op">$</span>pertype &lt;-<span class="st"> </span>per_targets<span class="op">$</span>pertype <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">mutate_at</span>(</a>
+<a class="sourceLine" id="cb5-4" title="4">    <span class="dt">.vars =</span> <span class="kw">vars</span>(<span class="st">`</span><span class="dt">1</span><span class="st">`</span>, <span class="st">`</span><span class="dt">2</span><span class="st">`</span>, <span class="st">`</span><span class="dt">3</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb5-5" title="5">    <span class="dt">.funs =</span> <span class="kw">list</span>(<span class="op">~</span>. <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb5-6" title="6">  )</a>
+<a class="sourceLine" id="cb5-7" title="7"></a>
+<a class="sourceLine" id="cb5-8" title="8">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(hh_seed, hh_targets, per_seed, new_per_targets, <span class="dt">max_iterations =</span> <span class="dv">30</span>)</a></code></pre></div>
+<p>The resulting weights tend towards the extreme as the algorithm attempts to match unbalanced primary and secondary targets. In effect, the algorithm is making a large shift to the basic persons-per-household metric found in the household seed. Households with multiple people get large weights, while households with a one person get small weights.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">result<span class="op">$</span>weight_dist</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><code>ipu</code> can fix the underlying problem using the <code>secondary_importance</code> argument. It is <code>1</code> by default, which means the algorithm will attempt to match the absolute values of the secondary targets (as above). As this value is decreased to 0, the secondary targets are scaled to match the average weight of the primary targets.</p>
+<p>The examples below set <code>secondary_importance</code> to <code>0.80</code> and <code>0.20</code> to show the effect on results. As secondary importance decreases, the match to person targets gets worse; however, the relative distribution of persons still match closely. The distribution of weights also improves.</p>
+<p>Note: for package build time, max iterations is capped at 30. While the impact of the factor can still be seen, consider running for 100 iterations and comparing the results.</p>
+<div id="secondary_importance-0.80" class="section level3">
+<h3>secondary_importance = 0.80</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">result_<span class="dv">80</span> &lt;-<span class="st"> </span><span class="kw">ipu</span>(</a>
+<a class="sourceLine" id="cb7-2" title="2">  hh_seed, hh_targets, per_seed, new_per_targets,</a>
+<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">max_iterations =</span> <span class="dv">30</span>,</a>
+<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">secondary_importance =</span> <span class="fl">.80</span></a>
+<a class="sourceLine" id="cb7-5" title="5">)</a>
+<a class="sourceLine" id="cb7-6" title="6"></a>
+<a class="sourceLine" id="cb7-7" title="7">result_<span class="dv">80</span><span class="op">$</span>weight_dist</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">result_<span class="dv">80</span><span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt; # A tibble: 2 x 6</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;   geography category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 1 geo_all   hhtype_1     35   43.7  8.66     24.7</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 2 geo_all   hhtype_2     65   80.9 15.9      24.5</span></a>
+<a class="sourceLine" id="cb8-7" title="7">result_<span class="dv">80</span><span class="op">$</span>secondary_comp</a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; # A tibble: 3 x 6</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt;   geography category  target result   diff pct_diff</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt; 1 geo_all   pertype_1    182   198.  16.0      8.79</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt; 2 geo_all   pertype_2    130   124.  -6.41    -4.93</span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt; 3 geo_all   pertype_3    208   189. -18.6     -8.95</span></a></code></pre></div>
+</div>
+<div id="secondary_importance-0.20" class="section level3">
+<h3>secondary_importance = 0.20</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">result_<span class="dv">20</span> &lt;-<span class="st"> </span><span class="kw">ipu</span>(</a>
+<a class="sourceLine" id="cb9-2" title="2">  hh_seed, hh_targets, per_seed, new_per_targets,</a>
+<a class="sourceLine" id="cb9-3" title="3">  <span class="dt">max_iterations =</span> <span class="dv">30</span>,</a>
+<a class="sourceLine" id="cb9-4" title="4">  <span class="dt">secondary_importance =</span> <span class="fl">.20</span></a>
+<a class="sourceLine" id="cb9-5" title="5">)</a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7">result_<span class="dv">20</span><span class="op">$</span>weight_dist</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">result_<span class="dv">20</span><span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt; # A tibble: 2 x 6</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt;   geography category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; 1 geo_all   hhtype_1     35   35.6  0.63     1.79</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; 2 geo_all   hhtype_2     65   66.1  1.13     1.73</span></a>
+<a class="sourceLine" id="cb10-7" title="7">result_<span class="dv">20</span><span class="op">$</span>secondary_comp</a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt; # A tibble: 3 x 6</span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt;   geography category  target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; 1 geo_all   pertype_1    182  119.  -63.2    -34.7</span></a>
+<a class="sourceLine" id="cb10-12" title="12"><span class="co">#&gt; 2 geo_all   pertype_2    130   84.6 -45.4    -34.9</span></a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="co">#&gt; 3 geo_all   pertype_3    208  134.  -74.4    -35.8</span></a></code></pre></div>
+</div>
+</div>
+</div>
+<div id="extreme-weights" class="section level1">
+<h1>Extreme Weights</h1>
+<p>Often, it is preferable to constrain weights so that certain, under-sampled observations to do not end up with extreme weights. <code>ipu()</code> supports this by using the <code>min_ratio</code> and <code>max_ratio</code> variables. The easiest way to see the effect of these variables is in the <code>weight_dist</code> histogram. No columns will appear outside the min/max ratios.</p>
+<p>Common values to use are:</p>
+<ul>
+<li>max_ratio = 5 (5x the average weight)</li>
+<li>min_ratio = .2 (1/5 the average weight)</li>
+</ul>
+<p><em>Note: weight ratios are calculated by geography.</em></p>
+<p>Care should be taken when moving these variables from their default values. These variables impose another constraint on the algorithm and increase run time and the chance of failure. In the example below, strict ratio values of 1.2 and .8 mean that all weights must be within 20% of the average weight.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">hh_seed &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb11-2" title="2">  <span class="dt">id =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb11-3" title="3">  <span class="dt">siz =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb11-4" title="4">  <span class="dt">weight =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb11-5" title="5">  <span class="dt">geo_cluster =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb11-6" title="6">)</a>
+<a class="sourceLine" id="cb11-7" title="7"></a>
+<a class="sourceLine" id="cb11-8" title="8">hh_targets &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb11-9" title="9">hh_targets<span class="op">$</span>siz &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb11-10" title="10">  <span class="dt">geo_cluster =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb11-11" title="11">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="dv">75</span>, <span class="dv">100</span>),</a>
+<a class="sourceLine" id="cb11-12" title="12">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="dv">25</span>, <span class="dv">150</span>)</a>
+<a class="sourceLine" id="cb11-13" title="13">)</a>
+<a class="sourceLine" id="cb11-14" title="14"></a>
+<a class="sourceLine" id="cb11-15" title="15">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(hh_seed, hh_targets, <span class="dt">max_iterations =</span> <span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb11-16" title="16">              <span class="dt">max_ratio =</span> <span class="fl">1.2</span>, <span class="dt">min_ratio =</span> <span class="fl">.8</span>)</a></code></pre></div>
+<p>Consider the effect on geo_cluster 1. With a total target of 100 households and two records in the seed table, the average weight is 50. This means that the final weights are constrained between 40 and 60 by the <code>min_ratio</code> and <code>max_ratio</code>. The weight distribution histogram confirms that the caps were respected.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">result<span class="op">$</span>weight_dist</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>However, note that all weights are set to either the maximum or minimum possible. The algorithm does not have enough flexibility to meet the controls, which is shown by looking at the comparison table.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="co">#&gt;   geography     category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-5" title="5"><span class="co">#&gt; 1 geo_cluster_1 siz_1        75     60   -15      -20</span></a>
+<a class="sourceLine" id="cb13-6" title="6"><span class="co">#&gt; 2 geo_cluster_1 siz_2        25     40    15       60</span></a>
+<a class="sourceLine" id="cb13-7" title="7"><span class="co">#&gt; 3 geo_cluster_2 siz_1       100    100     0        0</span></a>
+<a class="sourceLine" id="cb13-8" title="8"><span class="co">#&gt; 4 geo_cluster_2 siz_2       150    150     0        0</span></a></code></pre></div>
+<p>A second problem can arise when using these ratios. In the example below, I change the targets so that, for geo_cluster 1, they are very unbalanced. Cluster 1 now has 100,000 1-person households but only 10 2-person households. This means the <em>average</em> weight for that cluster will be 50,005 and the minimum weight will be 10,001. The minimum weight is larger 2-person target of 10.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">hh_targets &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb14-2" title="2">hh_targets<span class="op">$</span>siz &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb14-3" title="3">  <span class="dt">geo_cluster =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb14-4" title="4">  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="dv">100000</span>, <span class="dv">100</span>),</a>
+<a class="sourceLine" id="cb14-5" title="5">  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">150</span>)</a>
+<a class="sourceLine" id="cb14-6" title="6">)</a>
+<a class="sourceLine" id="cb14-7" title="7"></a>
+<a class="sourceLine" id="cb14-8" title="8">result &lt;-<span class="st"> </span><span class="kw">ipu</span>(hh_seed, hh_targets, <span class="dt">max_iterations =</span> <span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb14-9" title="9">              <span class="dt">max_ratio =</span> <span class="dv">5</span>, <span class="dt">min_ratio =</span> <span class="fl">.2</span>)</a>
+<a class="sourceLine" id="cb14-10" title="10"></a>
+<a class="sourceLine" id="cb14-11" title="11">result<span class="op">$</span>weight_tbl</a>
+<a class="sourceLine" id="cb14-12" title="12"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
+<a class="sourceLine" id="cb14-13" title="13"><span class="co">#&gt;      id   siz weight geo_cluster avg_weight weight_factor</span></a>
+<a class="sourceLine" id="cb14-14" title="14"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb14-15" title="15"><span class="co">#&gt; 1     1     1 100000           1      50005          2.00</span></a>
+<a class="sourceLine" id="cb14-16" title="16"><span class="co">#&gt; 2     2     2  10001           1      50005          0.2 </span></a>
+<a class="sourceLine" id="cb14-17" title="17"><span class="co">#&gt; 3     3     2    150           2        125          1.2 </span></a>
+<a class="sourceLine" id="cb14-18" title="18"><span class="co">#&gt; 4     4     1    100           2        125          0.8</span></a>
+<a class="sourceLine" id="cb14-19" title="19"></a>
+<a class="sourceLine" id="cb14-20" title="20">result<span class="op">$</span>primary_comp</a>
+<a class="sourceLine" id="cb14-21" title="21"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
+<a class="sourceLine" id="cb14-22" title="22"><span class="co">#&gt;   geography     category target result  diff pct_diff</span></a>
+<a class="sourceLine" id="cb14-23" title="23"><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb14-24" title="24"><span class="co">#&gt; 1 geo_cluster_1 siz_1    100000 100000     0        0</span></a>
+<a class="sourceLine" id="cb14-25" title="25"><span class="co">#&gt; 2 geo_cluster_1 siz_2        10  10001  9991    99910</span></a>
+<a class="sourceLine" id="cb14-26" title="26"><span class="co">#&gt; 3 geo_cluster_2 siz_1       100    100     0        0</span></a>
+<a class="sourceLine" id="cb14-27" title="27"><span class="co">#&gt; 4 geo_cluster_2 siz_2       150    150     0        0</span></a></code></pre></div>
+<p>This is an extreme example, and is unlikely to be an issue in applications related to housing and population. In these applications, the targets are generally on the same order of magnitude. In other applications, like expanding a through-trip table to traffic counts, it is more common to have some external stations with large targets (freeways) and others with small (arterials). In these cases, it is advisable to leave the scale arguments at their default values.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,319 @@
+---
+title: "Using ipfr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using_ipfr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Iterative proportional fitting
+([IPF](https://en.wikipedia.org/wiki/Iterative_proportional_fitting)) is used in
+many disciplines to adjust an initial set of weights to match various marginal
+distributions. This package implements the iterative proportional updating
+algorithm based on the paper from Arizona State University
+([IPU](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&rep=rep1&type=pdf)).
+In survey raking or population synthesis, the IPU algorithm has the added
+advantage of being able to match household- and person-level marginal targets.
+
+The primary functions of the `ipfr` package are discussed below.
+
+  * `ipu_matrix()`
+  * `ipu()`
+  * `synthesize()`
+
+```{r setup}
+suppressPackageStartupMessages({
+  library(ipfr)
+  library(dplyr)
+})
+```
+
+## Example: 2D / Matrix
+
+The first example shows how to use `ipfr` to solve one of the most common IPF
+problems: Given a matrix of starting weights and a set of row and column
+targets, balance the matrix in order to satisfy both row and column targets.
+
+```{r}
+set.seed(42)
+mtx <- matrix(data = runif(9), nrow = 3, ncol = 3)
+row_targets <- c(3, 4, 5)
+column_targets <- c(5, 4, 3)
+mtx
+```
+
+The resulting matrix satisfies both row and column targets while retaining a
+similar relative distribution of weights in each cell.
+
+```{r}
+result <- ipu_matrix(mtx, row_targets, column_targets)
+result
+rowSums(result)
+colSums(result)
+```
+
+## Example: Household survey (simple)
+
+The matrix example is common and conceptually simple, but makes thinking about
+higher-dimension problems difficult. A much better way to think about the
+problem (whether in two or ten dimensions) is as a table.
+
+This example creates a household survey that will act as the seed (like the
+matrix from the last example). The number of persons and autos for each
+household is listed in the `size` and `autos` columns. A starting weight of 1 is
+also included.
+
+```{r}
+survey <- tibble(
+  size = c(1, 2, 1, 1),
+  autos = c(0, 2, 2, 1),
+  weight = 1
+)
+
+survey
+```
+
+Assume that we know the total number of households by size and households by
+auto-ownership from the Census. These target marginal distributions are just
+like our row and column totals from the previous example. Targets are passed
+into the `ipu` function as shown below. Take the size targets, for example:
+
+  * The list name `size` corresponds to the `size` column in the survey.
+  * The column names `1` and `2` correspond to the unique values in the survey's
+    `size` column.
+
+```{r}
+targets <- list()
+targets$size <- tibble(
+  `1` = 75,
+  `2` = 25
+)
+targets$autos <- tibble(
+  `0` = 25,
+  `1` = 50,
+  `2` = 25
+)
+
+targets
+```
+
+A call to `ipu()` returns a named list of results.
+
+```{r}
+result <- ipu(survey, targets)
+names(result)
+```
+
+The first element is the resulting weight table. The primary seed has three
+columns appended:
+
+  * weight
+    * The new/expanded weight of the record.
+  * avg_weight
+    * The average weight, which is the total target / number of seed records.
+  * weight_factor
+    * Each record's weight divided by the average weight. This is a useful
+      diagnostic to measure how extreme a weight is.
+
+```{r}
+result$weight_tbl
+```
+
+The second element is a histogram of the `weight_factor`. This provides a quick
+overview of the distribution of weights. Many large or small weights can
+indicate underlying problems even if the ipu converged and matches targets. For
+instance, a record with a weight factor of 50 means that it is greatly
+over-represented in the re-weighted survey.
+
+```{r}
+result$weight_dist
+```
+
+The next element is a comparison back to the targets provided. With complex
+seed and target tables, this makes investigating results quick and easy.
+
+```{r}
+result$primary_comp
+```
+
+If secondary targets are provided to `ipu()`, a fourth item in the list will
+contain a `secondary_comp` table.
+
+## Example: Add person targets
+
+In household survey expansion, it is common to want to control for certain 
+features that describe households (like size) while controlling for other 
+attributes that describe people (like age). This is possible with the `ipu()`
+function.
+
+This example is taken directly from the Arizona paper on page 20:
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.723&rep=rep1&type=pdf
+
+In this example, household type could represent size (e.g. 1-person and 2-person
+households). Person type could represent age groups (e.g. under 18, between
+18 and 50, and over 50).
+
+`setup_arizona()` creates the seed and target tables used in the example.
+
+```{r arizona inputs}
+result <- setup_arizona()
+hh_seed <- result$hh_seed
+hh_targets <- result$hh_targets
+per_seed <- result$per_seed
+per_targets <- result$per_targets
+```
+
+  * The household seed table is the `primary_seed`
+  * The household target list is the `primary_target`
+  * The person seed table is the `secondary_seed`
+  * The person target list is the `secondary_target`
+  
+In the interest of keeping vignette build time short, the `ipu()` algorithm is 
+only run for 30 iterations. After running for 400 or more iterations, the 
+results match closely to those shown in the paper.
+
+```{r arizona ipu}
+result <- ipu(hh_seed, hh_targets, per_seed, per_targets, max_iterations = 30)
+```
+
+The comparison table for the secondary (person) marginals is now included in
+`result`. Feel free to run the code chunk above for 400 or more iterations and
+then look again.
+
+```{r arizona results}
+result$weight_tbl
+  
+result$primary_comp
+
+result$secondary_comp
+```
+
+
+## Example 3: Using multiple geographies
+
+`ipu()` allows different geographies to be specified for different marginal
+tables. There are a few rules that make this possible, but in short, a geography
+field in each target table tells the algorithm which scale to constrain to. If
+no geography field is present in a target table, it applies to the entire seed
+table (i.e. region).
+
+All of the following rules are checked by the function and a warning message will
+show which (if any) is violated.
+
+  * The primary seed table must contain all geography fields used by any
+    target tables.
+  * Do not duplicate geography fields on the secondary seed table.
+    * This prevents potential errors/inconsistencies between seed tables.
+  * All fields that designate geographies must start with "geo_" e.g.
+    * geo_tract
+    * geo_region
+    * geo_state
+
+To demonstrate, the Arizona example is modified to add two different tracts
+for household controls but to still control the person targets at the regional
+level.
+
+```{r multigeo inputs}
+# Repeat the hh_seed to create tract 1 and 2 households
+new_hh_seed <- hh_seed %>%
+  mutate(geo_tract = 1)
+new_hh_seed <- bind_rows(
+  new_hh_seed,
+  new_hh_seed %>% 
+    mutate(geo_tract = 2, id = id + 8)
+)
+new_hh_seed$geo_region <- 1
+
+new_hh_seed
+
+# Repeat the household targets for two tracts
+new_hh_targets <- hh_targets
+new_hh_targets$hhtype <- bind_rows(hh_targets$hhtype, hh_targets$hhtype)
+new_hh_targets$hhtype <- new_hh_targets$hhtype %>%
+  mutate(geo_tract = c(1, 2))
+
+new_hh_targets$hhtype
+
+# Repeat the per_seed to create tract 1 and 2 persons
+new_per_seed <- bind_rows(
+  per_seed,
+  per_seed %>% 
+    mutate(id = id + 8)
+)
+
+new_per_seed
+
+# Double the regional person targets
+new_per_targets <- per_targets
+new_per_targets$pertype <- per_targets$pertype %>%
+  mutate_all(list(~. * 2)) %>%
+  mutate(geo_region = 1)
+
+new_per_targets$pertype
+```
+
+Run the IPU algorithm. Again, for vignette build time, only 30 iterations are
+performed. Run the code yourself with `max_iterations` set to 600 to see the
+converged result.
+
+```{r multigeo ipu}
+result <- ipu(
+  new_hh_seed, new_hh_targets,
+  new_per_seed, new_per_targets,
+  max_iterations = 30
+)
+```
+
+The tables below show the results compared back to targets.
+
+```{r multigeo results}
+result$primary_comp
+
+result$secondary_comp
+```
+
+## Advanced options
+
+`ipu` offers some advanced options for controlling the behavior. Weights can
+be capped with `min_ratio` and `max_ratio` options. Secondary target importance
+can be adjusted using the `secondary_importance` option. For info on using
+these options appropriately, see the `common_ipf_problems` vignette.
+
+## Synthetic Populations
+
+The `weight_tbl` from `ipu()` can be fed into the `synthesize()` function to
+generate a synthetic population. The code block below takes the output from the
+previous example to demonstrate. The `group_by` option tells the function to
+group by the `geo_tract` field before random sampling takes places. This will
+ensure that the number of sampled records in each tract equals the total weight
+in each tract.
+
+A `new_id` is created for each synthetic member (usually a household), but the
+old ID is preserved to facilitate joins or other operations where it could be
+useful.
+
+```{r}
+set.seed(42)
+synthesize(result$weight_tbl, group_by = "geo_tract") %>%
+  head()
+```
+
+A tidyverse-style call also works, as shown below.
+
+```{r}
+set.seed(42)
+result$weight_tbl %>%
+  group_by(geo_tract) %>%
+  synthesize() %>%
+  head()
+```
