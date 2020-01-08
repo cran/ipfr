@@ -4,8 +4,14 @@
 \alias{balance_secondary_targets}
 \title{Balances secondary targets to primary}
 \usage{
-balance_secondary_targets(primary_targets, primary_seed, secondary_targets,
-  secondary_seed, secondary_importance, primary_id)
+balance_secondary_targets(
+  primary_targets,
+  primary_seed,
+  secondary_targets,
+  secondary_seed,
+  secondary_importance,
+  primary_id
+)
 }
 \arguments{
 \item{primary_targets}{A \code{named list} of data frames.  Each name in the

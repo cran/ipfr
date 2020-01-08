@@ -8,7 +8,6 @@ test_that("ipu_matrix works", {
   row_targets <- c(3, 4, 5)
   column_targets <- c(5, 4, 3)
   result <- ipu_matrix(mtx, row_targets, column_targets)
-  expect_equal(class(result), "matrix")
   expect_equal(round(rowSums(result)[1], 4), 3)
   expect_equal(colSums(result)[3], 3)
 })
@@ -40,6 +39,24 @@ test_that("basic ipu works", {
     ipu(seed_missing_cat, hh_targets),
     "Marginal hhtype category 2 missing from geo_all 1"
   )
+})
+
+test_that("single marginal targets work", {
+  result <- setup_arizona()
+  hh_seed <- result$hh_seed
+  hh_targets <- result$hh_targets
+  per_seed <- result$per_seed
+  per_targets <- result$per_targets
+  
+  # Modify if only a regional person count is known
+  per_seed <- per_seed %>%
+    mutate(pertype = "any")
+  per_targets$pertype <- tibble(
+    any = 260
+  )
+  
+  result <- ipu(hh_seed, hh_targets, per_seed, per_targets, max_iterations = 1)
+  expect_equal(result$secondary_comp$category[[1]], "pertype_any")
 })
 
 test_that("weight constraint works", {

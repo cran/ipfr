@@ -137,48 +137,21 @@ ipu <- function(primary_seed, primary_targets,
   # to be used as needed.
   geo_equiv <- primary_seed %>%
     dplyr::select(dplyr::starts_with("geo_"), primary_id, "weight")
-  primary_seed_mod <- primary_seed %>%
-    dplyr::select(-dplyr::starts_with("geo_"))
+  # primary_seed_mod <- primary_seed %>%
+  #   dplyr::select(-dplyr::starts_with("geo_"))
 
-  # Remove any fields that aren't in the target list and change the ones
-  # that are to factors.
-  col_names <- names(primary_targets)
-  primary_seed_mod <- primary_seed_mod %>%
-    # Keep only the fields of interest (marginal columns and id)
-    dplyr::select(dplyr::one_of(c(col_names, primary_id))) %>%
-    # Convert to factors and then to dummy columns if the column has more
-    # than one category.
-    dplyr::mutate_at(
-      .vars = col_names,
-      .funs = list(~as.factor(.))
-    )
-  # If one of the columns has only one value, it cannot be a factor. The name
-  # must also be changed to match what the rest will be after one-hot encoding.
-  for (name in col_names){
-    if (length(unique(primary_seed_mod[[name]])) == 1) {
-      # unfactor
-      primary_seed_mod[[name]] <- type.convert(as.character(primary_seed_mod[[name]]))
-      # change name
-      value = primary_seed_mod[[name]][1]
-      new_name <- paste0(name, ".", value)
-      names(primary_seed_mod)[names(primary_seed_mod) == name] <- new_name
-    }
-  }
-  # Use one-hot encoding to convert the remaining factor fields to dummies
-  primary_seed_mod <- primary_seed_mod %>%
-    mlr::createDummyFeatures()
-  
+  # Process the seed table into dummy variables (one-hot encoding)
+  marginal_columns <- names(primary_targets)
+  primary_seed_mod <- process_seed_table(
+    primary_seed, primary_id, marginal_columns
+  )
+
   if (!is.null(secondary_seed)) {
     # Modify the person seed table the same way, but sum by primary ID
-    col_names <- names(secondary_targets_mod)
-    secondary_seed_mod <- secondary_seed %>%
-      # Keep only the fields of interest
-      dplyr::select(dplyr::one_of(col_names), primary_id) %>%
-      dplyr::mutate_at(
-        .vars = col_names,
-        .funs = list(~as.factor(.))
-      ) %>%
-      mlr::createDummyFeatures() %>%
+    marginal_columns <- names(secondary_targets_mod)
+    secondary_seed_mod <- process_seed_table(
+      secondary_seed, primary_id, marginal_columns
+    ) %>%
       dplyr::group_by(!!as.name(primary_id)) %>%
       dplyr::summarize_all(
         .funs = sum
@@ -190,11 +163,11 @@ ipu <- function(primary_seed, primary_targets,
   } else {
     seed <- primary_seed_mod
   }
-  
+
   # Add the geo information back.
   seed <- seed %>%
     dplyr::left_join(geo_equiv, by = primary_id)
-  
+    
   # store a vector of attribute column names to loop over later.
   # don't include primary_id or 'weight' in the vector.
   geo_pos <- grep("geo_", colnames(seed))
@@ -893,4 +866,46 @@ ipu_matrix <- function(mtx, row_targets, column_targets, ...) {
   return(final)
 }
 
+#' Helper function to process a seed table
+#' 
+#' Helper for \code{ipu()}. Strips columns from seed table except for the
+#' primary id and marginal column (as reflected in the targets tables). Also
+#' identifies factor columns with one level and processes them before
+#' \code{mlr::createDummyFeatures()} is called.
+#' 
+#' @param df the \code{data.frame} as processed by \code{ipu()} before this
+#'   function is called.
+#' @param primary_id the name of the primary ID column.
+#' @param marginal_columns The vector of column names in the seed table that
+#'   have matching targets.
+#' @keywords internal
 
+process_seed_table <- function(df, primary_id, marginal_columns){
+  df <- df %>%
+    dplyr::select(-dplyr::starts_with("geo_")) %>%
+    dplyr::select(dplyr::one_of(c(marginal_columns, primary_id))) %>%
+    dplyr::mutate_at(
+      .vars = marginal_columns,
+      .funs = list(~as.factor(.))
+    )
+  
+  # handle any factors with only 1 level
+  for (name in marginal_columns){
+    if (length(unique(df[[name]])) == 1) {
+      # unfactor
+      df[[name]] <- type.convert(
+        as.character(df[[name]]),
+        as.is = TRUE
+      )
+      # change name
+      value = df[[name]][1]
+      new_name <- paste0(name, ".", value)
+      names(df)[names(df) == name] <- new_name
+      # change value
+      df[[new_name]] <- 1
+    }
+  }
+  df <- df  %>%
+    mlr::createDummyFeatures()
+  return(df)
+}

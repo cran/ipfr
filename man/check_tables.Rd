@@ -4,8 +4,13 @@
 \alias{check_tables}
 \title{Check seed and target tables for completeness}
 \usage{
-check_tables(primary_seed, primary_targets, secondary_seed = NULL,
-  secondary_targets = NULL, primary_id)
+check_tables(
+  primary_seed,
+  primary_targets,
+  secondary_seed = NULL,
+  secondary_targets = NULL,
+  primary_id
+)
 }
 \arguments{
 \item{primary_seed}{In population synthesis or household survey expansion, 

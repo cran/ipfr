@@ -1,15 +1,24 @@
 <!-- badges: start -->
+[![CRAN
+status](https://www.r-pkg.org/badges/version/ipfr)](https://cran.r-project.org/package=ipfr)
 [![Travis build status](https://travis-ci.org/dkyleward/ipfr.svg?branch=master)](https://travis-ci.org/dkyleward/ipfr)
 [![Codecov test coverage](https://codecov.io/gh/dkyleward/ipfr/branch/master/graph/badge.svg)](https://codecov.io/gh/dkyleward/ipfr?branch=master)
 <!-- badges: end -->
 
 # ipfr
 
-A general function for conducting iterative proportional fitting on multiple
-marginal distributions in R.
+A package for iterative proportional fitting on multiple marginal distributions
+in R. The goal of this package is to make survey raking, matrix balancing, and
+population synthesis easier.
 
 ## Installation
-Install the package using:
+Install the latest official version from CRAN:
+
+```r
+install.packages("ipfr")
+```
+
+Install the development version of the package:
 
 ```r
 library(devtools)
@@ -18,7 +27,7 @@ install_github("dkyleward/ipfr", build_vignettes = TRUE)
 
 ## Basic Usage
 
-(More in the vignettes) 
+(See vignettes at the bottom for advanced topics.)
 
 A basic matrix balance task:
 
@@ -55,3 +64,7 @@ Creating synthetic households from the `ipu()` result:
 ```r
 synthesize(result$weight_tbl)
 ```
+
+## Vignettes
+Using ipfr: https://cran.r-project.org/web/packages/ipfr/vignettes/using_ipfr.html  
+Common ipf problems: https://cran.r-project.org/web/packages/ipfr/vignettes/common_ipf_problems.html

@@ -2,18 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{setup_arizona}
 \alias{setup_arizona}
-\title{Setup the ASU example}
+\title{Create the ASU example}
 \usage{
 setup_arizona()
 }
 \value{
-When run, it creates four variables in the calling environment:
+A list of four variables:
   hh_seed, hh_targets, per_seed, and per_targets. These can be used directly
   by \code{\link{ipu}}.
 }
 \description{
-This code sets up the Arizona example IPU problem and avoids repeating this
-code in multiple places throughout the package (vignettes/tests).
+Sets up the Arizona example IPU problem and is used in multiple places
+throughout the package (vignettes/tests).
 }
 \examples{
 setup_arizona()
