@@ -527,12 +527,12 @@ check_tables <- function(primary_seed, primary_targets,
 #' @return Nothing. Throws an error if one is found.
 
 check_missing_categories <- function(seed, target, target_name, geo_colname) {
-  
+
   for (geo in unique(unlist(seed[, geo_colname]))){  
     
     # Get column names for the current geo that have a >0 target
-    non_zero_targets <- target[target[geo_colname] == geo,
-                            colSums(target[target[geo_colname] == geo, ]) > 0]
+    non_zero_targets <- target[target[[geo_colname]] == geo,
+                            colSums(target[target[[geo_colname]] == geo, ]) > 0]
     col_names <- colnames(non_zero_targets)
     col_names <- type.convert(col_names[!col_names == geo_colname], as.is = TRUE)
     

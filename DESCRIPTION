@@ -1,6 +1,6 @@
 Package: ipfr
 Title: List Balancing for Reweighting and Population Synthesis
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
   person(
     "Kyle", "Ward", email = "kyleward084@gmail.com",
@@ -30,9 +30,9 @@ Suggests: knitr, rmarkdown, testthat (>= 2.1.0), covr
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2
 NeedsCompilation: no
-Packaged: 2020-01-07 15:06:26 UTC; kyle
+Packaged: 2020-04-01 19:42:58 UTC; kyle
 Author: Kyle Ward [aut, cre, cph],
   Greg Macfarlane [ctb]
 Maintainer: Kyle Ward <kyleward084@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-01-08 16:30:08 UTC
+Date/Publication: 2020-04-01 20:20:02 UTC
